@@ -6,6 +6,7 @@ class Mapper {
     id;
     inputMqttClient;
     outputMqttClient;
+    outputTopic;
     constructor(functionInstanceId, deviceSerial, input, output) {
         this.id = `${functionInstanceId}-${deviceSerial}`; // Construct this mapper's id from function instance name and input device serial 
         input.host = input.host.startsWith('mqtt://') ? input.host : 'mqtt://'+input.host; // In case orchestrator forgot to put the protocol in hostname
@@ -30,13 +31,27 @@ class Mapper {
         this.outputMqttClient.on("connect", function () {
             console.log(`Connected to broker ${output.host} to output ${deviceSerial} of function instance ${functionInstanceId}`);
         });
+        this.outputTopic = output.topic;
     }
 
     _map(topic, message){
         message = message.toString();
         // Parse the message
-        console.log(message);
+        let data = message.split(",");
+        let TS = +data[1];
+        if(TS/1000000000000>1){ //TS is in milliseconds. Convert it to the nearest tenth second
+            TS = Math.floor(TS/10000)*10;
+        }
+        data[1] = TS;
+        this._mapper._emit(TS, data.toString());
     }
+
+    _emit(key, value){
+        const payload = {};
+        payload[key] = value;
+        this.outputMqttClient.publish(this.outputTopic, JSON.stringify(payload));
+    }
+    
 
 }
 
