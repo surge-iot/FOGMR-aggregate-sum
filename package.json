@@ -1,0 +1,21 @@
+{
+  "name": "aggregate-add",
+  "version": "1.0.0",
+  "description": "A FOGMR function to aggregate values using the add function via MapReduce",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shinjan Mitra",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.15",
+    "mqtt": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
